@@ -28,6 +28,7 @@ public class Logger
         OverrideDebugLevel(modName);
     }
 
+
     public static void Sleep()
     {
         _awake = false;
@@ -38,6 +39,7 @@ public class Logger
         _awake = true;
     }
 
+
     public static void Cleanup()
     {
         using (StreamWriter writer = new StreamWriter(_logPath, false))
@@ -45,6 +47,7 @@ public class Logger
             writer.WriteLine($"[{_modName} @ {DateTime.Now.ToString()}] CLEANED UP");
         }
     }
+
 
     public static void Error(Exception ex)
     {
@@ -65,6 +68,7 @@ public class Logger
         Logger.Error(ex);
     }
 
+
     public static void Debug(String line, bool showPrefix = true)
     {
         if (_awake && _debugLevel >= 2)
@@ -82,6 +86,7 @@ public class Logger
         Logger.Debug(line, showPrefix);
     }
 
+
     public static void Info(String line, bool showPrefix = true)
     {
         if (_awake && _debugLevel >= 3)
@@ -95,11 +100,13 @@ public class Logger
         Logger.Info(line, showPrefix);
     }
 
+
     public static void Always(String line, bool showPrefix = true)
     {
-        if (_awake)
+        using (StreamWriter writer = new StreamWriter(_logPath, true))
         {
-            Logger.Debug(line, showPrefix);
+            string prefix = showPrefix ? $"[{_modName} @ {DateTime.Now.ToString()}] " : "";
+            writer.WriteLine(prefix + line);
         }
     }
     [Obsolete("Logger.LogAlways is deprecated, please use Logger.Always instead")]
@@ -107,6 +114,8 @@ public class Logger
     {
         Logger.Always(line, showPrefix);
     }
+
+
 
     public static void OverrideDebugLevel(string modName)
     {
